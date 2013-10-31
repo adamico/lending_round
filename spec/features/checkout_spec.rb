@@ -11,16 +11,17 @@ feature "User wanting to lend money" do
   # then a note is created
   # and I should see /notes/:id
 
-  given!(:user) {create(:user)}
+  given!(:lender) {create(:user)}
+  given!(:borrower) {create(:user, name: "Pinco Pallino")}
 
   background do
     OmniAuth.config.test_mode = true
     OmniAuth.config.add_mock :dwolla, {
-      uid: user.uid,
-      provider: user.provider,
+      uid: lender.uid,
+      provider: lender.provider,
       info: {
-        name: user.name,
-        email: user.email
+        name: lender.name,
+        email: lender.email
       }
     }
   end
@@ -34,19 +35,7 @@ feature "User wanting to lend money" do
     fill_in "note_term",       with: 36
     fill_in "note_start_date", with: "2013/10/27"
 
-    [
-      {type: "lender", first: "Bob", last: "Raymond", email: "bobraymond@gmail.com", address: "270 Boylston St Boston MA 02116" },
-      {type: "borrower", first: "Terry", last: "Nichols", email: "terrynichols@gmail.com", address: "1358 Richard Dr Boston MA 02115" }
-    ].each do |lender_or_borrower|
-      type = lender_or_borrower[:type]
-      first = lender_or_borrower[:first]
-      last = lender_or_borrower[:last]
-      email = lender_or_borrower[:email]
-      address = lender_or_borrower[:address]
-      fill_in "note_#{type}_attributes_name",       with: [last, first].join(" ")
-      fill_in "note_#{type}_attributes_email",      with: email
-      fill_in "note_#{type}_attributes_address",    with: address
-    end
+    select "Pinco Pallino", from: "note_borrower_attributes_user_id"
 
     click_button "Checkout with Dwolla!"
     page.current_path.should match /\/notes\//
@@ -55,5 +44,7 @@ feature "User wanting to lend money" do
     page.should have_content "The Interest Rate is for 11.0%"
     page.should have_content "It lasts for 36 months"
     page.should have_content "First Payment Date is October 27, 2013"
+    page.should have_content "Pinco Pallino"
+    page.should have_content lender.name
   end
 end

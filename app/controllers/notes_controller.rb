@@ -24,7 +24,7 @@ class NotesController < ApplicationController
   # GET /notes/new
   # GET /notes/new.json
   def new
-    @note = Note.new
+    @note = Note.new(lender_attributes_user_id: current_user.id)
     @note.build_lender unless @note.lender
     @note.build_borrower unless @note.borrower
 

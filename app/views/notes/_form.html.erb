@@ -43,9 +43,7 @@
   <% %w(lender borrower).each do |lender_or_borrower| %>
     <div class="span6">
       <%= f.simple_fields_for :"#{lender_or_borrower}" do |lb| %>
-        <%= lb.input :name %>
-        <%= lb.input :email %>
-        <%= lb.input :address %>
+        <%= lb.association :user, collection: User.asc(:name), selected: current_user.id %>
       <% end %>
     </div>
   <% end %>

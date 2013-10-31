@@ -19,6 +19,7 @@
   <% %w(borrower lender).each do |borrower_or_lender| %>
     <div class="span5 offset1">
       <h3><%= borrower_or_lender.titleize %></h3>
+      <p><%= @note.send(borrower_or_lender).user %></p>
     </div>
   <% end -%>
 </div>
@@ -31,7 +32,7 @@
           <%= label_tag borrower_or_lender, "Signature", class: "control-label" %>
           <div class="controls">
             <%= text_field_tag borrower_or_lender, "",
-              placeholder: @note.send(borrower_or_lender).name %>
+              placeholder: @note.send(borrower_or_lender).user %>
           </div>
         </div>
         <div class="row">
