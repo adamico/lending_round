@@ -6,5 +6,6 @@
     <% @users.each do |user| %>
       <p>User: <%=link_to user.name, user %></p>
     <% end %>
+    <%= link_to "Create a loan", new_note_path, class: "btn btn-primary" %>
   </div>
 </div>
